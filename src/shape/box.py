@@ -40,17 +40,17 @@ class Box(Shape):
         self.transformations = []
 
     def draw(self):
+        glEnableClientState(GL_COLOR_ARRAY)
         for i in range(len(self.vertices)):
             ind = [j for j in range(len(self.vertices[i]))]
             glColorPointer(3, GL_UNSIGNED_BYTE, 0, self.colors[i])
             glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.vertices[i]])
-            glEnableClientState(GL_VERTEX_ARRAY)
-            glEnableClientState(GL_COLOR_ARRAY)
             glLineWidth(4)
             glDrawElementsui(
                 GL_QUADS,  # GL_QUADS or GL_LINE_LOOP
                 ind
             )
+        glDisableClientState(GL_COLOR_ARRAY)
 
     def change_color(self):
         self.colors = generate_colors(6)
@@ -100,13 +100,7 @@ class Box(Shape):
         self.subdivision -= 1
         self.colors = generate_colors(6, self.subdivision)
 
-    def scale(self, sX, sY, sZ):
-        for i in range(len(self.vertices)):
-            for j in range(len(self.vertices[i])):
-                self.vertices[i][j] *= Mat3d.scale(sX, sY, sZ)
-        self.addTransformation(Mat3d.scale(sX, sY, sZ))
-
-    def rotate(self, matrix):
+    def apply_transformation(self, matrix):
         for i in range(len(self.vertices)):
             for j in range(len(self.vertices[i])):
                 self.vertices[i][j] *= matrix

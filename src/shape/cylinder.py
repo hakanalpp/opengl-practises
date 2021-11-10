@@ -10,7 +10,6 @@ import math
 
 from .shape import Shape
 from ..vector3d import Vec3d
-from ..matrix3d import Mat3d
 
 
 class Cylinder(Shape):
@@ -39,7 +38,6 @@ class Cylinder(Shape):
 
     def draw(self):
         glLineWidth(2)
-        glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [120 for i in range(1000)])
 
@@ -67,6 +65,7 @@ class Cylinder(Shape):
                 ind2
             )
             self.drawBorder(ind2, i)
+        glDisableClientState(GL_COLOR_ARRAY)
 
     def drawBorder(self, ind, arr):
         glDisableClientState(GL_COLOR_ARRAY)
@@ -91,18 +90,9 @@ class Cylinder(Shape):
             k.rotate(i)
         self.__dict__.update(k.__dict__)
 
-    def scale(self, sX, sY, sZ):
+    def apply_transformation(self, matrix):
         k = self.side
         for i in range(len(k)):
-            for j in range(len(self.side[i])):
-                self.side[i][j] *= Mat3d.scale(sX, sY, sZ)
-        for i in range(len(self.topCircle)):
-            self.topCircle[i] *= Mat3d.scale(sX, sY, sZ)
-            self.bottomCircle[i] *= Mat3d.scale(sX, sY, sZ)
-        self.addTransformation(Mat3d.scale(sX, sY, sZ))
-
-    def rotate(self, matrix):
-        for i in range(len(self.side)):
             for j in range(len(self.side[i])):
                 self.side[i][j] *= matrix
         for i in range(len(self.topCircle)):

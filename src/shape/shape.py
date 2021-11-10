@@ -24,6 +24,10 @@ class Shape:
         self.transformations.append(transformation)
 
     @abstractmethod
+    def draw(self):
+        pass
+
+    @abstractmethod
     def decrease_subdivision(self):
         pass
 
@@ -31,3 +35,15 @@ class Shape:
     def increase_subdivision(self):
         pass
 
+    @abstractmethod
+    def apply_transformation(self, matrix):
+        pass
+
+    def move(self, x, y, z):
+        self.apply_transformation(Mat3d.translation(x, y, z))
+
+    def scale(self, sX, sY, sZ):
+        self.apply_transformation(Mat3d.scale(sX, sY, sZ))
+
+    def rotate(self, matrix):
+        self.apply_transformation(matrix)

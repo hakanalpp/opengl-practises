@@ -54,8 +54,10 @@ def ReSizeGLScene(Width, Height):
 
 # The main drawing function.
 def drawObjects():
+    glEnableClientState(GL_VERTEX_ARRAY)
     for obj in objects:
         obj.draw()
+    glDisableClientState(GL_VERTEX_ARRAY)
 
 
 def DrawGLScene():
@@ -110,8 +112,8 @@ def drag(x, y):
             yVec = -10
 
         for obj in objects:
-            obj.rotate(Mat3d.rotateX(yVec/150))
-            obj.rotate(Mat3d.rotateY(xVec/150))
+            obj.rotate(Mat3d.rotateX(yVec/250))
+            obj.rotate(Mat3d.rotateY(xVec/250))
         m.pop(0)
         glutPostRedisplay()
 
@@ -139,4 +141,11 @@ def main():
 
 
 print("Hit ESC key to quit.")
+print("You can zoom in/out using mouse wheel")
+print("You can also move the camera with mouse left click")
+print("Press +/- to increase/decrease subdivisions")
+print("Note that using +/- will change every objects subdivisions at once")
+print("So pressing too much will make it freeze")
+print("Quick note to Erdem hoca: I alread finished the homework last week")
+print("And did some performance updates this week")
 main()
