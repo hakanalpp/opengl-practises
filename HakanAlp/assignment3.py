@@ -1,4 +1,4 @@
-# CENG 487 Assignment#2 by
+# CENG 487 Assignment#3 by
 # Hakan Alp
 # StudentId: 250201056
 # November 2021
@@ -8,16 +8,16 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-from src.shape import Box, Cylinder, Plane
-from src import Vec3d, Mat3d
+from src.shape import Object3D
+from src import Mat3d
+from src.utils.fileIO import *
 
 # Number of the glut window.
 window = 0
 
-o1 = Box(Vec3d(-1, 0, 0, 1))
-o2 = Cylinder()
-o3 = Plane()
-objects = [o1, o2, o3]
+o1 = Object3D(generate_vertices("./src/objects/ecube.obj"))
+o2 = Object3D(generate_vertices("./src/objects/tori.obj"))
+objects = [o1]
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
 
@@ -54,6 +54,7 @@ def ReSizeGLScene(Width, Height):
 
 # The main drawing function.
 def drawObjects():
+    draw_text("Subdivision Count: {}".format(objects[0].subdivision))
     glEnableClientState(GL_VERTEX_ARRAY)
     for obj in objects:
         obj.draw()
@@ -79,6 +80,10 @@ def keyPressed(key, x, y):
     elif key == b'-':
         for obj in objects:
             obj.decrease_subdivision()
+    elif key == b'1':
+        objects[0] = o1
+    elif key == b'2':
+        objects[0] = o2
     glutPostRedisplay()
 
 
@@ -121,15 +126,15 @@ def drag(x, y):
 def main():
     global window
     glutInit(sys.argv)
-
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(0, 0)
-    window = glutCreateWindow("Hakan Alp - Assignment 2")
+    window = glutCreateWindow("Hakan Alp - Assignment 3")
     glutDisplayFunc(DrawGLScene)
     # glutFullScreen()	# Uncomment this line to get full screen.
     # Register the function called when our window is resized.
     glutReshapeFunc(ReSizeGLScene)
+    glutIdleFunc(drawObjects)
     # Register the function called when the keyboard is pressed.
     glutKeyboardFunc(keyPressed)
     glutMouseFunc(mouseMoved)
@@ -141,11 +146,8 @@ def main():
 
 
 print("Hit ESC key to quit.\n")
+print("[1,2] Change objects")
 print("[Mouse Wheel] Zoom in/out")
 print("[Mouse Drag/Drop] Camera movements")
-print("[+/-] Increase/Decrease subdivisions\n")
-print("NOTE:   Using +/- will change every objects subdivisions at once")
-print("\tSo pressing too much will make it freeze\n")
-print("Quick NOTE to Erdem hoca: I already finished the homework last week")
-print("And did some performance updates this week")
+print("[+/-] Increase/Decrease subdivisions")
 main()
