@@ -8,6 +8,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import random
 
+from src.matrix3d import Mat3d
+
 from .shape import Shape
 from ..vector3d import Vec3d
 
@@ -25,11 +27,12 @@ class Plane(Shape):
                              Vec3d(-2, -0.52, -2), Vec3d(2, -0.52, -2)]
         self.colors = generate_colors(self.subdivision)
 
-    def draw(self):
+    def draw(self, camera_matrix: "Mat3d"):
         glEnableClientState(GL_COLOR_ARRAY)
         ind = [j for j in range(len(self.vertices))]
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, self.colors)
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.vertices])
+        glVertexPointer(4, GL_FLOAT, 0, [
+                        (camera_matrix * o).v for o in self.vertices])
         glLineWidth(4)
         glDrawElementsui(
             GL_QUADS,  # GL_QUADS or GL_LINE_LOOP

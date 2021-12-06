@@ -25,25 +25,26 @@ class Object3D(Shape):
         # self.colors = generate_colors(6, self.subdivision)
         self.transformations = []
 
-    def draw(self):
+    def draw(self, camera_matrix: 'Mat3d'):
         glEnableClientState(GL_COLOR_ARRAY)
         for i in range(len(self.vertices)):
             ind = [j for j in range(len(self.vertices[i]))]
             glColorPointer(3, GL_UNSIGNED_BYTE, 0, [
                            160 for _ in range(len(self.vertices)*len(self.vertices[0])*3)])
-            glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.vertices[i]])
+            glVertexPointer(4, GL_FLOAT, 0, [
+                            (camera_matrix * o).v for o in self.vertices[i]])
             glLineWidth(2)
             glDrawElementsui(
                 GL_QUADS,  # GL_QUADS or GL_LINE_LOOP
                 ind
             )
-            self.drawBorder(ind, self.vertices[i])
+            self.drawBorder(ind, self.vertices[i], camera_matrix)
         glDisableClientState(GL_COLOR_ARRAY)
 
-    def drawBorder(self, ind, arr):
+    def drawBorder(self, ind, arr, camera_matrix: 'Mat3d'):
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [
                        255 for _ in range(len(arr)*3)])
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in arr])
+        glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in arr])
         glDrawElementsui(
             GL_LINE_LOOP,  # GL_POLYGON or GL_LINE_LOOP
             ind

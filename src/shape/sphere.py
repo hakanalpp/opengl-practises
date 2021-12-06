@@ -31,7 +31,7 @@ class Sphere(Shape):
                 circles[circleCount+i].append(Vec3d(math.cos(k)
                                                     * tempR, -(0.01) - r*(i/circleCount), math.sin(k)*tempR))
 
-    def draw(self):
+    def draw(self, camera_matrix: "Mat3d"):
         glLineWidth(1)
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [120 for _ in range(1000)])
         glEnableClientState(GL_COLOR_ARRAY)
@@ -42,16 +42,17 @@ class Sphere(Shape):
                 ind = [j for j in range(4)]
                 k = [circles[i][j+1], circles[i][j],
                      circles[i+1][j], circles[i+1][j+1]]
-                glVertexPointer(4, GL_FLOAT, 0, [o.v for o in k])
+                glVertexPointer(4, GL_FLOAT, 0, [
+                                (camera_matrix * o).v for o in k])
                 glDrawElementsui(
                     GL_QUADS,  # GL_POLYGON or GL_LINE_LOOP
                     ind
                 )
-                self.drawBorder(k)
+                self.drawBorder(k, camera_matrix)
 
-    def drawBorder(self, arr):
+    def drawBorder(self, arr, camera_matrix: "Mat3d"):
         glDisableClientState(GL_COLOR_ARRAY)
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in arr])
+        glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in arr])
         glDrawElementsui(
             GL_LINE_LOOP,  # GL_POLYGON or GL_LINE_LOOP
             [i for i in range(len(arr))]

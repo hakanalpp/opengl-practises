@@ -8,6 +8,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import math
 
+from src.matrix3d import Mat3d
+
 from .shape import Shape
 from ..vector3d import Vec3d
 
@@ -36,21 +38,23 @@ class Cylinder(Shape):
                          Vec3d(bottomCircle[i].x, bottomCircle[i].y, bottomCircle[i].z), Vec3d(bottomCircle[i+1].x, bottomCircle[i+1].y, bottomCircle[i+1].z)])
         self.side = side
 
-    def draw(self):
+    def draw(self, camera_matrix: 'Mat3d'):
         glLineWidth(2)
         glEnableClientState(GL_COLOR_ARRAY)
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [120 for i in range(1000)])
 
         ind = [j for j in range(len(self.topCircle))]
 
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.topCircle])
+        glVertexPointer(4, GL_FLOAT, 0, [
+                        (camera_matrix * o).v for o in self.topCircle])
         glDrawElementsui(
             GL_POLYGON,  # GL_POLYGON or GL_LINE_LOOP
             ind
         )
         self.drawBorder(ind, self.topCircle)
 
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.bottomCircle])
+        glVertexPointer(4, GL_FLOAT, 0, [
+                        (camera_matrix * o).v for o in self.bottomCircle])
         glDrawElementsui(
             GL_POLYGON,  # GL_POLYGON or GL_LINE_LOOP
             ind
@@ -59,17 +63,17 @@ class Cylinder(Shape):
 
         for i in self.side:
             ind2 = [j for j in range(len(i))]
-            glVertexPointer(4, GL_FLOAT, 0, [o.v for o in i])
+            glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in i])
             glDrawElementsui(
                 GL_QUADS,  # GL_QUADS or GL_LINE_LOOP
                 ind2
             )
-            self.drawBorder(ind2, i)
+            self.drawBorder(ind2, i, camera_matrix)
         glDisableClientState(GL_COLOR_ARRAY)
 
-    def drawBorder(self, ind, arr):
+    def drawBorder(self, ind, arr, camera_matrix: 'Mat3d'):
         glDisableClientState(GL_COLOR_ARRAY)
-        glVertexPointer(4, GL_FLOAT, 0, [o.v for o in arr])
+        glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in arr])
         glDrawElementsui(
             GL_LINE_LOOP,  # GL_POLYGON or GL_LINE_LOOP
             ind

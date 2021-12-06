@@ -19,10 +19,3 @@ def generate_vertices(filename):
                 f = line.split(" ")
                 faces.append([Vec3d(vertices[int(i)-1]) for i in f[1:]])
     return faces
-
-
-def draw_text(text):
-    # glColor3f(1, 1, 1)
-    glWindowPos2d(20, 20)
-    for i in range(len(text)):
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ord(text[i]))

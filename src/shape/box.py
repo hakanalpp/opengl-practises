@@ -39,12 +39,13 @@ class Box(Shape):
         self.colors = generate_colors(6, self.subdivision)
         self.transformations = []
 
-    def draw(self):
+    def draw(self, camera_matrix: "Mat3d"):
         glEnableClientState(GL_COLOR_ARRAY)
         for i in range(len(self.vertices)):
             ind = [j for j in range(len(self.vertices[i]))]
             glColorPointer(3, GL_UNSIGNED_BYTE, 0, self.colors[i])
-            glVertexPointer(4, GL_FLOAT, 0, [o.v for o in self.vertices[i]])
+            glVertexPointer(4, GL_FLOAT, 0, [
+                            (camera_matrix * o).v for o in self.vertices[i]])
             glLineWidth(4)
             glDrawElementsui(
                 GL_QUADS,  # GL_QUADS or GL_LINE_LOOP
