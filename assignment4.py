@@ -10,13 +10,12 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 from src.app import App
-from src.shape import Object3D
 from src import Mat3d
+from src.shape.winged_object import WingedObject3D
 from src.utils.fileIO import *
 
+
 app = App()
-o1 = Object3D(generate_vertices("./src/objects/ecube.obj"))
-o2 = Object3D(generate_vertices("./src/objects/tori.obj"))
 
 
 def InitGL(Width, Height):
@@ -61,12 +60,18 @@ def keyPressed(key, x, y):
         app.scene.increase_subdivision()
     elif key == b'-':
         app.scene.decrease_subdivision()
-    elif key == b'1':
-        app.scene.objects.pop()
-        app.scene.add_object(o1)
-    elif key == b'2':
-        app.scene.objects.pop()
-        app.scene.add_object(o2)
+    glutPostRedisplay()
+
+
+def specialKeyPressed(key, x, y):
+    if key == GLUT_KEY_LEFT:
+        app.scene.translate_camera(Mat3d.rotateY(-0.06))
+    elif key == GLUT_KEY_RIGHT:
+        app.scene.translate_camera(Mat3d.rotateY(0.06))
+    elif key == GLUT_KEY_UP:
+        app.scene.translate_camera(Mat3d.rotateX(-0.06))
+    elif key == GLUT_KEY_DOWN:
+        app.scene.translate_camera(Mat3d.rotateX(0.06))
     glutPostRedisplay()
 
 
@@ -113,9 +118,9 @@ def initGlut():
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(0, 0)
-    glutCreateWindow("Hakan Alp - Assignment 3")
+    glutCreateWindow("Hakan Alp - Assignment 4")
     glutDisplayFunc(DrawGLScene)
-
+    glutSpecialFunc(specialKeyPressed)
     glutReshapeFunc(ReSizeGLScene)
     glutIdleFunc(drawObjects)
 
@@ -129,12 +134,15 @@ def initGlut():
 
 def main():
     global app
-    app.scene.add_object(o1)
+    if(len(sys.argv) < 2):
+        print("Please enter an object like below:")
+        print("python assignment4.py <objectname.obj>")
+        return
+    print("Catmull-Clark was not perfect :(. I spent most of my time on working with winged-edge structure.")
+    app.scene.add_object(WingedObject3D(generate_winged_edge(
+        "./src/objects/{file}".format(file=sys.argv[1]))))
     app.scene.translate_camera(Mat3d.scale(0.5, 0.5, 0.5))
     initGlut()
 
 
-print("Improvements since last submission:")
-print("\t- App, Camera, and Scene classes created.")
-print("\t- Instructions are printed to the screen.")
 main()

@@ -1,7 +1,8 @@
-# CENG 487 Assignment#3 by
+# CENG 487 Assignment#4 by
 # Hakan Alp
 # StudentId: 250201056
-# November 2021
+# December 2021
+
 
 import sys
 
@@ -91,3 +92,16 @@ class Vec3d:
     @staticmethod
     def middlePoint(v1, v2):
         return Vec3d((v1+v2)*0.5)
+
+    @staticmethod
+    def average_point(*args) -> 'Vec3d':
+        x, y, z = 0, 0, 0
+        index = 0
+        for i in args:
+            if i == None:
+                continue
+            x += i.x
+            y += i.y
+            z += i.z
+            index += 1
+        return Vec3d(x/index, y/index, z/index)

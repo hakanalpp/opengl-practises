@@ -1,7 +1,8 @@
-# CENG 487 Assignment#3 by
+# CENG 487 Assignment#4 by
 # Hakan Alp
 # StudentId: 250201056
-# November 2021
+# December 2021
+
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
