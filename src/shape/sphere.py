@@ -1,4 +1,4 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
@@ -10,8 +10,8 @@ from OpenGL.GLU import *
 import math
 
 from .shape import Shape
-from ..vector3d import Vec3d
-from ..matrix3d import Mat3d
+from ..vector import Point3f
+from ..matrix import Matrix
 
 
 class Sphere(Shape):
@@ -28,11 +28,11 @@ class Sphere(Shape):
             for j in range(circleCount+1):
                 k = math.radians(j*angle)
                 circles[circleCount-i-1].append(
-                    Vec3d(math.cos(k)*tempR, (0.01) + r*(i/circleCount), math.sin(k)*tempR))
-                circles[circleCount+i].append(Vec3d(math.cos(k)
-                                                    * tempR, -(0.01) - r*(i/circleCount), math.sin(k)*tempR))
+                    Point3f(math.cos(k)*tempR, (0.01) + r*(i/circleCount), math.sin(k)*tempR))
+                circles[circleCount+i].append(Point3f(math.cos(k)
+                                                      * tempR, -(0.01) - r*(i/circleCount), math.sin(k)*tempR))
 
-    def draw(self, camera_matrix: "Mat3d"):
+    def draw(self, camera_matrix: "Matrix"):
         glLineWidth(1)
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [120 for _ in range(1000)])
         glEnableClientState(GL_COLOR_ARRAY)
@@ -49,9 +49,9 @@ class Sphere(Shape):
                     GL_QUADS,  # GL_POLYGON or GL_LINE_LOOP
                     ind
                 )
-                self.drawBorder(k, camera_matrix)
+                self.draw_border(k, camera_matrix)
 
-    def drawBorder(self, arr, camera_matrix: "Mat3d"):
+    def draw_border(self, arr, camera_matrix: "Matrix"):
         glDisableClientState(GL_COLOR_ARRAY)
         glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in arr])
         glDrawElementsui(

@@ -1,18 +1,16 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
-
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import math
 
-from src.matrix3d import Mat3d
-
+from ..matrix import Matrix
 from .shape import Shape
-from ..vector3d import Vec3d
+from ..vector import Point3f
 
 
 class Cylinder(Shape):
@@ -27,19 +25,19 @@ class Cylinder(Shape):
         angle = 360 / polygonCount
         for i in range(polygonCount+1):
             k = math.radians(i*angle)
-            topCircle.append(Vec3d(math.cos(k)*r+1, h/2, math.sin(k)*r))
-            bottomCircle.append(Vec3d(math.cos(k)*r+1, -h/2, math.sin(k)*r))
+            topCircle.append(Point3f(math.cos(k)*r+1, h/2, math.sin(k)*r))
+            bottomCircle.append(Point3f(math.cos(k)*r+1, -h/2, math.sin(k)*r))
 
         self.topCircle = topCircle
         self.bottomCircle = bottomCircle
 
         side = []
         for i in range(len(topCircle)-1):
-            side.append([Vec3d(topCircle[i+1].x, topCircle[i+1].y, topCircle[i+1].z), Vec3d(topCircle[i].x, topCircle[i].y, topCircle[i].z),
-                         Vec3d(bottomCircle[i].x, bottomCircle[i].y, bottomCircle[i].z), Vec3d(bottomCircle[i+1].x, bottomCircle[i+1].y, bottomCircle[i+1].z)])
+            side.append([Point3f(topCircle[i+1].x, topCircle[i+1].y, topCircle[i+1].z), Point3f(topCircle[i].x, topCircle[i].y, topCircle[i].z),
+                         Point3f(bottomCircle[i].x, bottomCircle[i].y, bottomCircle[i].z), Point3f(bottomCircle[i+1].x, bottomCircle[i+1].y, bottomCircle[i+1].z)])
         self.side = side
 
-    def draw(self, camera_matrix: 'Mat3d'):
+    def draw(self, camera_matrix: 'Matrix'):
         glLineWidth(2)
         glEnableClientState(GL_COLOR_ARRAY)
         glColorPointer(3, GL_UNSIGNED_BYTE, 0, [120 for i in range(1000)])
@@ -47,34 +45,36 @@ class Cylinder(Shape):
         ind = [j for j in range(len(self.topCircle))]
 
         glVertexPointer(4, GL_FLOAT, 0, [
-                        (camera_matrix * o).v for o in self.topCircle])
+                        (camera_matrix * o).asList() for o in self.topCircle])
         glDrawElementsui(
             GL_POLYGON,  # GL_POLYGON or GL_LINE_LOOP
             ind
         )
-        self.drawBorder(ind, self.topCircle)
+        self.draw_border(ind, self.topCircle, camera_matrix)
 
         glVertexPointer(4, GL_FLOAT, 0, [
-                        (camera_matrix * o).v for o in self.bottomCircle])
+                        (camera_matrix * o).asList() for o in self.bottomCircle])
         glDrawElementsui(
             GL_POLYGON,  # GL_POLYGON or GL_LINE_LOOP
             ind
         )
-        self.drawBorder(ind, self.bottomCircle)
+        self.draw_border(ind, self.bottomCircle, camera_matrix)
 
         for i in self.side:
             ind2 = [j for j in range(len(i))]
-            glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in i])
+            glVertexPointer(4, GL_FLOAT, 0, [
+                            (camera_matrix * o).asList() for o in i])
             glDrawElementsui(
                 GL_QUADS,  # GL_QUADS or GL_LINE_LOOP
                 ind2
             )
-            self.drawBorder(ind2, i, camera_matrix)
+            self.draw_border(ind2, i, camera_matrix)
         glDisableClientState(GL_COLOR_ARRAY)
 
-    def drawBorder(self, ind, arr, camera_matrix: 'Mat3d'):
+    def draw_border(self, ind, arr, camera_matrix: 'Matrix'):
         glDisableClientState(GL_COLOR_ARRAY)
-        glVertexPointer(4, GL_FLOAT, 0, [(camera_matrix * o).v for o in arr])
+        glVertexPointer(4, GL_FLOAT, 0, [
+                        (camera_matrix * o).asList() for o in arr])
         glDrawElementsui(
             GL_LINE_LOOP,  # GL_POLYGON or GL_LINE_LOOP
             ind

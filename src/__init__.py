@@ -1,10 +1,10 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
 
 
-from .matrix3d import Mat3d
-from .vector3d import Vec3d
+from .matrix import Matrix
+from .vector import Point3f
 
-__all__ = [Mat3d, Vec3d]
+__all__ = [Matrix, Point3f]

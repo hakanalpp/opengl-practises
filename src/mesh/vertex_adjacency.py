@@ -1,16 +1,15 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
 
-
-from src.vector3d import Vec3d
+from ..vector import Point3f
 
 
 class VertexAdjacency:
     def __init__(self, x, y, z):
         self.edge = None
-        self.p: Vec3d = Vec3d(x, y, z)
+        self.p: Point3f = Point3f(x, y, z)
         self.x = x
         self.y = y
         self.z = z

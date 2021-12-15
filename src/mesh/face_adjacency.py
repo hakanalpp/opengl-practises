@@ -1,11 +1,9 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
 
-
-from src.mesh.vertex_adjacency import VertexAdjacency
-from src.vector3d import Vec3d
+from ..vector import Point3f
 
 
 class FaceAdjacency:
@@ -33,9 +31,9 @@ class FaceAdjacency:
 
     def calculate_facepoint(self):
         v = self.vertices
-        self.facepoint = Vec3d((v[0].x + v[1].x + v[2].x + v[3].x)/4,
-                               (v[0].y + v[1].y + v[2].y + v[3].y)/4,
-                               (v[0].z + v[1].z + v[2].z + v[3].z)/4)
+        self.facepoint = Point3f((v[0].x + v[1].x + v[2].x + v[3].x)/4,
+                                 (v[0].y + v[1].y + v[2].y + v[3].y)/4,
+                                 (v[0].z + v[1].z + v[2].z + v[3].z)/4)
         return self.facepoint
 
     def get_all_edges(self):

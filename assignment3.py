@@ -1,4 +1,4 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
@@ -11,12 +11,12 @@ from OpenGL.GLU import *
 
 from src.app import App
 from src.shape import Object3D
-from src import Mat3d
+from src import Matrix
 from src.utils.fileIO import *
 
 app = App()
-o1 = Object3D(generate_vertices("./src/objects/ecube.obj"))
-o2 = Object3D(generate_vertices("./src/objects/tori.obj"))
+o1 = Object3D("./ecube.obj")
+o2 = Object3D("./tori.obj")
 
 
 def InitGL(Width, Height):
@@ -76,9 +76,9 @@ def mouseMoved(key, x, y, z):
     if key != 3 and key != 4:
         return
     if key == 3:
-        app.scene.translate_camera(Mat3d.scale(1.05, 1.05, 1.05))
+        app.scene.translate_camera(Matrix.scale(1.05, 1.05, 1.05))
     elif key == 4:
-        app.scene.translate_camera(Mat3d.scale(0.95, 0.95, 0.95))
+        app.scene.translate_camera(Matrix.scale(0.95, 0.95, 0.95))
     glutPostRedisplay()
 
 
@@ -102,8 +102,8 @@ def drag(x, y):
         if(yVec < -10):
             yVec = -10
 
-        app.scene.translate_camera(Mat3d.rotateX(
-            yVec/250) @ Mat3d.rotateY(xVec/250))
+        app.scene.translate_camera(Matrix.rotateX(
+            yVec/250) @ Matrix.rotateY(xVec/250))
         m.pop(0)
         glutPostRedisplay()
 
@@ -130,7 +130,7 @@ def initGlut():
 def main():
     global app
     app.scene.add_object(o1)
-    app.scene.translate_camera(Mat3d.scale(0.5, 0.5, 0.5))
+    app.scene.translate_camera(Matrix.scale(0.5, 0.5, 0.5))
     initGlut()
 
 

@@ -1,11 +1,11 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
 
 from src.mesh.face_adjacency import FaceAdjacency
 from src.mesh.vertex_adjacency import VertexAdjacency
-from src.vector3d import Vec3d
+from src.vector import Point3f
 
 
 class EdgeAdjacency:
@@ -52,7 +52,7 @@ class EdgeAdjacency:
     def calculate_edgepoint(self):
         v = self.vertices
         f = self.faces
-        self.edgepoint = Vec3d.average_point(
+        self.edgepoint = Point3f.average_point(
             v[0].p, v[1].p, f[0].facepoint, f[1].facepoint)
         return self.edgepoint
 
@@ -60,7 +60,7 @@ class EdgeAdjacency:
         return str(self.vertices[0]) + ", " + str(self.vertices[1])
 
     def get_midpoint(self):
-        return Vec3d.middlePoint(self.vertices[0].p, self.vertices[1].p)
+        return Point3f.middle_point(self.vertices[0].p, self.vertices[1].p)
 
     def is_legit(self):
         for i in self.vertices:

@@ -1,4 +1,4 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
@@ -10,7 +10,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 from src.app import App
-from src import Mat3d
+from src import Matrix
 from src.shape.winged_object import WingedObject3D
 from src.utils.fileIO import *
 
@@ -65,13 +65,13 @@ def keyPressed(key, x, y):
 
 def specialKeyPressed(key, x, y):
     if key == GLUT_KEY_LEFT:
-        app.scene.translate_camera(Mat3d.rotateY(-0.06))
+        app.scene.translate_camera(Matrix.rotateY(-0.06))
     elif key == GLUT_KEY_RIGHT:
-        app.scene.translate_camera(Mat3d.rotateY(0.06))
+        app.scene.translate_camera(Matrix.rotateY(0.06))
     elif key == GLUT_KEY_UP:
-        app.scene.translate_camera(Mat3d.rotateX(-0.06))
+        app.scene.translate_camera(Matrix.rotateX(-0.06))
     elif key == GLUT_KEY_DOWN:
-        app.scene.translate_camera(Mat3d.rotateX(0.06))
+        app.scene.translate_camera(Matrix.rotateX(0.06))
     glutPostRedisplay()
 
 
@@ -81,9 +81,9 @@ def mouseMoved(key, x, y, z):
     if key != 3 and key != 4:
         return
     if key == 3:
-        app.scene.translate_camera(Mat3d.scale(1.05, 1.05, 1.05))
+        app.scene.translate_camera(Matrix.scale(1.05, 1.05, 1.05))
     elif key == 4:
-        app.scene.translate_camera(Mat3d.scale(0.95, 0.95, 0.95))
+        app.scene.translate_camera(Matrix.scale(0.95, 0.95, 0.95))
     glutPostRedisplay()
 
 
@@ -107,8 +107,8 @@ def drag(x, y):
         if(yVec < -10):
             yVec = -10
 
-        app.scene.translate_camera(Mat3d.rotateX(
-            yVec/250) @ Mat3d.rotateY(xVec/250))
+        app.scene.translate_camera(Matrix.rotateX(
+            yVec/250) @ Matrix.rotateY(xVec/250))
         m.pop(0)
         glutPostRedisplay()
 
@@ -138,10 +138,9 @@ def main():
         print("Please enter an object like below:")
         print("python assignment4.py <objectname.obj>")
         return
-    print("Catmull-Clark was not perfect :(. I spent most of my time on working with winged-edge structure.")
     app.scene.add_object(WingedObject3D(generate_winged_edge(
-        "./src/objects/{file}".format(file=sys.argv[1]))))
-    app.scene.translate_camera(Mat3d.scale(0.5, 0.5, 0.5))
+        "{file}".format(file=sys.argv[1]))))
+    app.scene.translate_camera(Matrix.scale(0.5, 0.5, 0.5))
     initGlut()
 
 

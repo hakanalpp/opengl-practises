@@ -16,23 +16,23 @@ from OpenGL.GLU import *
 import sys
 
 from src.shape import Shape
-from src import Vec3d, Mat3d
+from src import Point3f, Matrix
 
 # Number of the glut window.
 window = 0
 
 colors = sum([[255, 0, 0] for i in range(4)] + [[0, 255, 0] for i in range(4)] + [[0, 0, 255] for i in range(4)] +
              [[255, 255, 0] for i in range(4)] + [[0, 255, 255] for i in range(4)] + [[255, 0, 255] for i in range(4)], [])
-o1 = Shape([Vec3d([1.0, 1.0, -1.0, 1]), Vec3d([-1.0, 1.0, -1.0, 1]), Vec3d([-1.0, 1.0, 1.0, 1]), Vec3d([1.0, 1.0, 1.0, 1]),  # Top
-            Vec3d([1.0, -1.0, 1.0, 1]), Vec3d([-1.0, -1.0, 1.0, 1]
-                                              ), Vec3d([-1.0, -1.0, -1.0, 1]), Vec3d([1.0, -1.0, -1.0, 1]),  # Bottom
-            Vec3d([1.0, 1.0, 1.0, 1]), Vec3d([-1.0, 1.0, 1.0, 1]
-                                             ), Vec3d([-1.0, -1.0, 1.0, 1]), Vec3d([1.0, -1.0, 1.0, 1]),  # Front
-            Vec3d([1.0, -1.0, -1.0, 1]), Vec3d([-1.0, -1.0, -1.0, 1]
-                                               ), Vec3d([-1.0, 1.0, -1.0, 1]), Vec3d([1.0, 1.0, -1.0, 1]),  # Back
-            Vec3d([-1.0, 1.0, 1.0, 1]), Vec3d([-1.0, 1.0, -1.0, 1]
-                                              ), Vec3d([-1.0, -1.0, -1.0, 1]), Vec3d([-1.0, -1.0, 1.0, 1]),  # Left
-            Vec3d([1.0, 1.0, -1.0, 1]), Vec3d([1.0, 1.0, 1.0, 1]), Vec3d([1.0, -1.0, 1.0, 1]), Vec3d([1.0, -1.0, -1.0, 1])], colors)  # Right
+o1 = Shape([Point3f([1.0, 1.0, -1.0, 1]), Point3f([-1.0, 1.0, -1.0, 1]), Point3f([-1.0, 1.0, 1.0, 1]), Point3f([1.0, 1.0, 1.0, 1]),  # Top
+            Point3f([1.0, -1.0, 1.0, 1]), Point3f([-1.0, -1.0, 1.0, 1]
+                                                  ), Point3f([-1.0, -1.0, -1.0, 1]), Point3f([1.0, -1.0, -1.0, 1]),  # Bottom
+            Point3f([1.0, 1.0, 1.0, 1]), Point3f([-1.0, 1.0, 1.0, 1]
+                                                 ), Point3f([-1.0, -1.0, 1.0, 1]), Point3f([1.0, -1.0, 1.0, 1]),  # Front
+            Point3f([1.0, -1.0, -1.0, 1]), Point3f([-1.0, -1.0, -1.0, 1]
+                                                   ), Point3f([-1.0, 1.0, -1.0, 1]), Point3f([1.0, 1.0, -1.0, 1]),  # Back
+            Point3f([-1.0, 1.0, 1.0, 1]), Point3f([-1.0, 1.0, -1.0, 1]
+                                                  ), Point3f([-1.0, -1.0, -1.0, 1]), Point3f([-1.0, -1.0, 1.0, 1]),  # Left
+            Point3f([1.0, 1.0, -1.0, 1]), Point3f([1.0, 1.0, 1.0, 1]), Point3f([1.0, -1.0, 1.0, 1]), Point3f([1.0, -1.0, -1.0, 1])], colors)  # Right
 objects = [o1]
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
@@ -95,9 +95,9 @@ def DrawGLScene():
 def animate():
     for obj in objects:
         for i in range(len(obj.vertices)):
-            obj.vertices[i] *= Mat3d.rotateX(-0.025)
-            obj.vertices[i] *= Mat3d.rotateY(0.030)
-            obj.vertices[i] *= Mat3d.rotateZ(0.028)
+            obj.vertices[i] *= Matrix.rotateX(-0.025)
+            obj.vertices[i] *= Matrix.rotateY(0.030)
+            obj.vertices[i] *= Matrix.rotateZ(0.028)
 
     glutPostRedisplay()
 
@@ -114,9 +114,9 @@ def mouseMoved(key, x, y, z):
     for obj in objects:
         for i in range(len(obj.vertices)):
             if key == 3:
-                obj.vertices[i] *= Mat3d.scale(1.05, 1.05, 1.05)
+                obj.vertices[i] *= Matrix.scale(1.05, 1.05, 1.05)
             elif key == 4:
-                obj.vertices[i] *= Mat3d.scale(0.95, 0.95, 0.95)
+                obj.vertices[i] *= Matrix.scale(0.95, 0.95, 0.95)
     glutPostRedisplay()
 
 
@@ -140,8 +140,8 @@ def drag(x, y):
 
         for obj in objects:
             for i in range(len(obj.vertices)):
-                obj.vertices[i] *= Mat3d.rotateX(yVec/150)
-                obj.vertices[i] *= Mat3d.rotateY(xVec/150)
+                obj.vertices[i] *= Matrix.rotateX(yVec/150)
+                obj.vertices[i] *= Matrix.rotateY(xVec/150)
         m.pop(0)
         glutPostRedisplay()
 

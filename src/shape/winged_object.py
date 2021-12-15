@@ -1,4 +1,4 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
@@ -15,8 +15,8 @@ from src.mesh.winged_edge import WingedEdge
 
 
 from .shape import Shape
-from ..vector3d import Vec3d
-from ..matrix3d import Mat3d
+from ..vector import Point3f
+from ..matrix import Matrix
 
 
 class WingedObject3D(Shape):
@@ -27,7 +27,7 @@ class WingedObject3D(Shape):
         self.subdivision = 0
         self.subdivision_max_level = 0
 
-    def draw(self, camera_matrix: 'Mat3d'):
+    def draw(self, camera_matrix: 'Matrix'):
         glEnableClientState(GL_COLOR_ARRAY)
         for face in self.winged_edge.faces:
             if(face.level != self.subdivision):
@@ -38,11 +38,11 @@ class WingedObject3D(Shape):
             for i in vertices:
                 glVertex3f(i.x, i.y, i.z)
             glEnd()
-            self.drawBorder(vertices)
+            self.draw_border(vertices)
 
         glDisableClientState(GL_COLOR_ARRAY)
 
-    def drawBorder(self, vertices):
+    def draw_border(self, vertices):
         glColor3f(1.0, 0.6, 0.0)
         glPointSize(5.0)
         glBegin(GL_LINE_LOOP)
@@ -83,14 +83,14 @@ class WingedObject3D(Shape):
                 if v in f.vertices and f not in connected_faces:
                     connected_faces.append(f)
 
-            F = Vec3d.average_point(
+            F = Point3f.average_point(
                 *[i.facepoint for i in connected_faces])
             for e in edges:
                 if (not e.check_level(self.subdivision)):
                     continue
                 if v in e.vertices and e not in connected_edges:
                     connected_edges.append(e)
-            R = Vec3d.average_point(
+            R = Point3f.average_point(
                 *[i.get_midpoint() for i in connected_edges])
 
             v.p = (F + (2*R) + ((len(connected_faces)-3)

@@ -9,12 +9,12 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 from src.shape import Box, Cylinder, Plane
-from src import Vec3d, Mat3d
+from src import Point3f, Matrix
 
 # Number of the glut window.
 window = 0
 
-o1 = Box(Vec3d(-1, 0, 0, 1))
+o1 = Box(Point3f(-1, 0, 0, 1))
 o2 = Cylinder()
 o3 = Plane()
 objects = [o1, o2, o3]
@@ -112,8 +112,8 @@ def drag(x, y):
             yVec = -10
 
         for obj in objects:
-            obj.rotate(Mat3d.rotateX(yVec/250))
-            obj.rotate(Mat3d.rotateY(xVec/250))
+            obj.rotate(Matrix.rotateX(yVec/250))
+            obj.rotate(Matrix.rotateY(xVec/250))
         m.pop(0)
         glutPostRedisplay()
 

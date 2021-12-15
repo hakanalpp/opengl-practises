@@ -1,13 +1,10 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
 
-
-from src.mesh.vertex_adjacency import VertexAdjacency
-from src.mesh.winged_edge import WingedEdge
-
-from src.vector3d import Vec3d
+from ..mesh import VertexAdjacency, WingedEdge
+from src.vector import Point3f
 
 
 def generate_vertices(filename):
@@ -19,11 +16,12 @@ def generate_vertices(filename):
             line = line.strip()
             if(line.startswith("v")):
                 l = line.split(" ")
-                vertices.append(Vec3d(float(l[1]), float(l[2]), float(l[3])))
+                vertices.append(Point3f(float(l[1]), float(l[2]), float(l[3])))
             if(line.startswith("f")):
                 f = line.split(" ")
-                faces.append([Vec3d(vertices[int(i)-1]) for i in f[1:]])
-    return faces
+                faces.append([int(f[1])-1, int(f[2])-1,
+                             int(f[3])-1, int(f[4])-1])
+    return [vertices, faces]
 
 
 def generate_winged_edge(filename):

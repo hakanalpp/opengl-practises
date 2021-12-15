@@ -1,4 +1,4 @@
-# CENG 487 Assignment#4 by
+# CENG 487 Assignment#5 by
 # Hakan Alp
 # StudentId: 250201056
 # December 2021
@@ -10,5 +10,6 @@ from .shape import Shape
 from .plane import Plane
 from .sphere import Sphere
 from .object import Object3D
+from .grid import Grid
 
-__all__ = [Shape, Box, Cylinder, Plane, Sphere, Object3D]
+__all__ = [Shape, Box, Cylinder, Plane, Sphere, Object3D, Grid]
