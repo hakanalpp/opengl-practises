@@ -138,4 +138,4 @@ class RGBA(HCoord):
         self.a = self.w
 
     def asList(self, faceCount):
-        return [self.r, self.g, self.b, 1.0]*faceCount
+        return [self.r, self.g, self.b, self.a]*faceCount

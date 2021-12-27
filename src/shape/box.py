@@ -29,4 +29,6 @@ class Box(Shape):
         faces.append([2, 6, 7, 3])
         faces.append([4, 0, 3, 7])
 
-        Shape.__init__(self, vertices, faces)
+        faces = [[[j, -1, -1] for j in i] for i in faces]
+
+        Shape.__init__(self, vertices, faces, [], [])

@@ -9,20 +9,27 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 
-from src.vector import Point3f, RGBA
+from src.vector import Point3f, RGBA, Vector3f
 from ..matrix import Matrix
 
 import numpy
 
 
 class Shape:
-    def __init__(self, vertices, faces):
+    def __init__(self, vertices, faces, UVs, normals, colors=[]):
         self.vertices: 'list[Point3f]' = vertices
-        self.faces: 'list[list[int]]' = faces
-        self.colors: 'list[RGBA]' = []
+        # Formed as [Vertex, Texture, Normal]
+        self.faces: 'list[list[list[int]]]' = faces
+        self.UVs: 'list[list[float]]' = UVs if len(
+            UVs) > 0 else self.generate_empty_uvs()
+        self.normals: 'list[Vector3f]' = normals if len(
+            normals) > 0 else self.generate_empty_normals()
         self.subdivision = 0
         self.transformations = []
-        self.generate_color()
+        if len(colors) > 0:
+            self.colors = colors
+        else:
+            self.generate_color()
 
     def addTransformation(self, transformation):
         self.transformations.append(transformation)
@@ -38,6 +45,21 @@ class Shape:
         for c in self.colors:
             colors += c.asList(4)
         return numpy.array(colors, dtype='float32')
+
+    def colors_as_list(self):
+        colors = []
+        for c in self.colors:
+            colors += c.asList(4)
+        return colors
+
+    def white_colors_as_list(self):
+        return [1.0 for i in range(len(self.colors)*16)]
+
+    def generate_empty_uvs(self):
+        return [-1 for i in range(len(self.faces)*2)]
+
+    def generate_empty_normals(self):
+        return [Point3f(0.73, 0.73, 0.73)] * len(self.faces)
 
     def generate_color(self):
         self.colors = [RGBA(*[random.uniform(0, 1) for _ in range(3)], 1.0)

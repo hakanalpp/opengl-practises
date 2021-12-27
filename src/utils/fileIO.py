@@ -4,7 +4,7 @@
 # December 2021
 
 from ..mesh import VertexAdjacency, WingedEdge
-from src.vector import Point3f
+from src.vector import Point3f, Vector3f
 
 
 def generate_vertices(filename):
@@ -22,6 +22,34 @@ def generate_vertices(filename):
                 faces.append([int(f[1])-1, int(f[2])-1,
                              int(f[3])-1, int(f[4])-1])
     return [vertices, faces]
+
+
+def generate_vertices_with_tn(filename):
+    with open(filename) as file:
+        lines = file.readlines()
+        vertices = []
+        faces = []
+        UVs = []
+        normals = []
+        for line in lines:
+            line = line.strip()
+            if(line.startswith("v ")):
+                l = line.split(" ")
+                vertices.append(Point3f(float(l[1]), float(l[2]), float(l[3])))
+            elif(line.startswith("vt ")):
+                l = line.split(" ")
+                UVs.append([float(l[1]), float(l[2])])
+            elif(line.startswith("vn ")):
+                l = line.split(" ")
+                normals.append(Point3f(float(l[1]), float(l[2]), float(l[3])))
+            elif(line.startswith("f ")):
+                if ("//" in line):
+                    faces.append(
+                        [[int(j.split("//")[0])-1, -1, int(j.split("//")[1])-1] for j in line.split(" ")[1:]])
+                else:
+                    faces.append([[int(i)-1 for i in j.split("/")]
+                                 for j in line.split(" ")[1:]])
+    return [vertices, faces, UVs, normals]
 
 
 def generate_winged_edge(filename):
