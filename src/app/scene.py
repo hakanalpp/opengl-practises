@@ -1,14 +1,16 @@
-# CENG 487 Assignment#6 by
+# CENG 487 Assignment#7 by
 # Hakan Alp
 # StudentId: 250201056
-# December 2021
+# January 2022
 
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLUT.fonts import GLUT_BITMAP_9_BY_15
 import numpy as np
 
+from src.light import PointLight, SpotLight, DirectionalLight
 from src.shape.box import Box
+from src.vector import RGBA
 
 from ..matrix import Matrix
 from ..shader import Shader
@@ -17,18 +19,32 @@ from .camera import Camera
 
 
 class Scene:
+
     def __init__(self):
         self.camera = Camera()
-        self.shader: 'Shader' = Shader(self.camera)
+        self.objects: 'list[Shape]' = []
+
         self.width = 640
         self.height = 640
-        self.objects: 'list[Shape]' = []
         self.subdivisons = 0
-        # This object is added to show light's place.
-        self.light1Obj = Box(0.05, 0.05, 0.05)
-        self.light1Obj.move(1.3, 1.54, 0.0)
-        self.add_object(self.light1Obj)
-        self.should_rotate = False
+        self.should_animate = False
+
+        # Thes Boxes are added to show lights' places.
+        self.pointLightBox = Box(0.05, 0.05, 0.05)
+        self.pointLightBox.move(1.3, 1.54, 0.0)
+        self.spotLightBox = Box(0.05, 0.05, 0.05)
+        self.spotLightBox.move(-1.45, 0, 0.0)
+        self.add_object(self.pointLightBox)
+        self.add_object(self.spotLightBox)
+
+        # Lights
+        self.pointLight = PointLight(1.3, 1.54, 0.0, RGBA(1, 1, 1, 1))
+        self.directionalLight = DirectionalLight(
+            0, 1, -1, RGBA(1, 0, 0, 1))
+        self.spotLight = SpotLight(-1.45, 0, 0.0,
+                                   1, -0.45, -0.1, 0.2, RGBA(0, 0, 1, 1))
+        self.shader: 'Shader' = Shader(
+            self.camera, self.pointLight, self.directionalLight, self.spotLight)
 
     def draw(self):
         if(len(self.objects) == 0):
@@ -56,14 +72,6 @@ class Scene:
             faceCount += len(obj.faces)
         self.shader.initVertexBuffer(np.array(
             finalVertexPositions + colors + finalVertexUvs + finalVertexNormals, dtype="float32"), faceCount)
-
-    def rotate_point_light_y(self, y):
-        pos = self.shader.pointLight.lightPos
-        self.shader.pointLight.lightPos = Matrix.rotateY(y) * pos
-        self.light1Obj.rotate(Matrix.rotateY(y))
-
-        self.shader.initLightParams()
-        self.update_vertex_buffer()
 
     def draw_text(self, text, w, h):
         width = w if w > 0 else self.width + w
@@ -119,19 +127,34 @@ class Scene:
         glLoadIdentity()
         glMatrixMode(GL_MODELVIEW)
 
-    def point_light_open(self):
-        return "Open" if self.shader.pointLight.lightIntensity == 1.0 else "Closed"
+    def rotate_point_light_y(self, y):
+        pos = self.pointLight.position
+        self.pointLight.position = Matrix.rotateY(y) * pos
+        self.pointLightBox.rotate(Matrix.rotateY(y))
 
-    def directional_light_open(self):
-        return "Open" if self.shader.directionalLight.lightIntensity == 1.0 else "Closed"
+    def rotate_spot_light(self, angle):
+        self.spotLight.direction = Matrix.rotateX(
+            angle) * self.spotLight.direction
+
+    def point_light_on(self):
+        return "On" if self.pointLight.lightIntensity == 1.0 else "Off"
+
+    def directional_light_on(self):
+        return "On" if self.directionalLight.lightIntensity == 1.0 else "Off"
+
+    def spot_light_on(self):
+        return "On" if self.spotLight.lightIntensity == 1.0 else "Off"
 
     def display_informative_text(self):
-        self.draw_text("Blinn: {}".format(self.shader.blinn), 20, 100)
+        self.draw_text("Blinn: {}".format(
+            "On" if self.shader.blinn else "Off"), 20, 120)
         self.draw_text("Point Light (White): {}".format(
-            self.point_light_open()), 20, 80)
-        self.draw_text("Directional Light (Red, [1,1,0]): {}".format(
-            self.directional_light_open()), 20, 60)
+            self.point_light_on()), 20, 100)
+        self.draw_text("Directional Light (Red, [0,1,1]): {}".format(
+            self.directional_light_on()), 20, 80)
+        self.draw_text("Spot Light (Blue, Left Wall, [1, -0.45, -0.1], 20°): {}".format(
+            self.spot_light_on()), 20, 60)
         self.draw_text("Point Light Rotating: {}".format(
-            self.should_rotate), 20, 40)
+            "On" if self.should_animate else "Off"), 20, 40)
         self.draw_text("Texture 1: {:.2f}, Texture 2: {:.2f}".format(
             1-self.shader.texScale, self.shader.texScale), 20, 20)

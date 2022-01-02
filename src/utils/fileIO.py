@@ -1,7 +1,7 @@
-# CENG 487 Assignment#6 by
+# CENG 487 Assignment#7 by
 # Hakan Alp
 # StudentId: 250201056
-# December 2021
+# January 2022
 
 from ..mesh import VertexAdjacency, WingedEdge
 from src.vector import Point3f, Vector3f

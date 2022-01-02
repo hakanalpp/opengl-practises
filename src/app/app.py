@@ -1,7 +1,7 @@
-# CENG 487 Assignment#6 by
+# CENG 487 Assignment#7 by
 # Hakan Alp
 # StudentId: 250201056
-# December 2021
+# January 2022
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -48,8 +48,8 @@ class App:
         self.scene.draw_text("[Mouse Drag/Drop] Camera movements", 20, -60)
         self.scene.draw_text("[+/-] Blend textures", 20, -80)
         self.scene.draw_text("[a] Animate Point Light", 20, -100)
-        self.scene.draw_text("[b] Blinn on/off", 20, -120)
-        self.scene.draw_text("[1/2] toggle lights", 20, -140)
+        self.scene.draw_text("[b] Toggle Blinn", 20, -120)
+        self.scene.draw_text("[1/3] Toggle lights", 20, -140)
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -78,17 +78,19 @@ class App:
         elif key == b'-':
             self.scene.decrease_scale()
         elif key == b'a':
-            self.scene.should_rotate = not self.scene.should_rotate
+            self.scene.should_animate = not self.scene.should_animate
         elif key == b'1':
             self.scene.shader.pointLight.lightIntensity = 0.0 if self.scene.shader.pointLight.lightIntensity == 1.0 else 1.0
             self.scene.shader.initLightParams()
         elif key == b'2':
             self.scene.shader.directionalLight.lightIntensity = 0.0 if self.scene.shader.directionalLight.lightIntensity == 1.0 else 1.0
             self.scene.shader.initLightParams()
+        elif key == b'3':
+            self.scene.shader.spotLight.lightIntensity = 0.0 if self.scene.shader.spotLight.lightIntensity == 1.0 else 1.0
+            self.scene.shader.initLightParams()
         elif key == b'b':
             self.scene.shader.blinn = not self.scene.shader.blinn
             self.scene.shader.initLightParams()
-        glutPostRedisplay()
 
     def specialKeyPressed(self, key, x, y):
         pass
@@ -100,7 +102,6 @@ class App:
         #     self.scene.transform_objects(Matrix.rotateX(-0.06))
         # elif key == GLUT_KEY_DOWN:
         #     self.scene.transform_objects(Matrix.rotateX(0.06))
-        # glutPostRedisplay()
 
     def mousePressed(self, key, x, y, z):
         if key != 3 and key != 4:
@@ -109,7 +110,6 @@ class App:
             self.scene.camera.zoom(0.15)
         elif key == 4:
             self.scene.camera.zoom(-0.15)
-        glutPostRedisplay()
 
     def mouseMove(self, x, y):
         m = self.m
@@ -128,11 +128,14 @@ class App:
 
             self.scene.camera.yaw(-xVec/250)
             self.scene.camera.pitch(-yVec/250)
-
-            glutPostRedisplay()
+            self.scene.shader.initLightParams()
         self.m = (x, y)
 
     def idleFunc(self):
-        if(self.scene.should_rotate):
-            self.scene.rotate_point_light_y(0.05)
+        if(self.scene.should_animate):
+            self.scene.rotate_point_light_y(0.035)
+            self.scene.rotate_spot_light(0.025)
+
+            self.scene.shader.initLightParams()
+            self.scene.update_vertex_buffer()
         self.draw()

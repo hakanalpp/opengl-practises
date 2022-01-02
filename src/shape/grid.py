@@ -1,7 +1,7 @@
-# CENG 487 Assignment#6 by
+# CENG 487 Assignment#7 by
 # Hakan Alp
 # StudentId: 250201056
-# December 2021
+# January 2022
 
 from src.vector import RGBA
 from ..shape import Box, Shape

@@ -3,14 +3,12 @@ from OpenGL.GLU import *
 from OpenGL.GL import *
 import numpy as np
 
-from src.light.directional_light import DirectionalLight
-from src.light.point_light import PointLight
+from src.light import DirectionalLight, PointLight, SpotLight
 from src.shader.texture import Texture
-from src.vector import RGBA
 
 
 class Shader:
-    def __init__(self, camera):
+    def __init__(self, camera, pointLight: PointLight, directionalLight: DirectionalLight, spotLight: SpotLight):
         self.VBO = None
         self.programID = None
         self.vertexDim = 4
@@ -18,9 +16,10 @@ class Shader:
         self.camera = camera
         self.texture = None
         self.texScale = 0.0
-        self.pointLight = PointLight(1.3, 1.54, 0.0, RGBA(1, 1, 1, 1))
-        self.directionalLight = DirectionalLight(1, 1, 0, RGBA(1, 0, 0, 1))
         self.blinn = False
+        self.pointLight = pointLight
+        self.spotLight = spotLight
+        self.directionalLight = directionalLight
 
     def init(self):
         self.initProgram()
@@ -154,27 +153,40 @@ class Shader:
         blinnLocation = glGetUniformLocation(programID, "blinn")
         glUniform1i(blinnLocation, self.blinn)
 
-        pLightPosLocation = glGetUniformLocation(programID, "pointLightPos")
-        glUniform3f(pLightPosLocation, *self.pointLight.lightPos.asList()[:3])
-        pLightColorLocation = glGetUniformLocation(
-            programID, "pointLightColor")
-        glUniform4f(pLightColorLocation, *self.pointLight.color_as_list())
-        pLightIntensityLocation = glGetUniformLocation(
-            programID, "pointLightIntensity")
-        glUniform1f(pLightIntensityLocation, self.pointLight.lightIntensity)
+        # I did not give the light params as list, because it is easier to check my program this way.
 
-        dLightPosDirection = glGetUniformLocation(
-            programID, "directionalLightDir")
-        glUniform3f(dLightPosDirection, self.directionalLight.direction[0],
-                    self.directionalLight.direction[1], self.directionalLight.direction[2])
-        dLightColorLocation = glGetUniformLocation(
-            programID, "directionalLightColor")
-        glUniform4f(dLightColorLocation, *
-                    self.directionalLight.color_as_list())
-        dLightIntensityLocation = glGetUniformLocation(
-            programID, "directionalLightIntensity")
-        glUniform1f(dLightIntensityLocation,
-                    self.directionalLight.lightIntensity)
+        # Point Light Params
+        glUniform3f(glGetUniformLocation(programID, "pointLightPos"),
+                    *self.pointLight.position.asList()[:3])
+        glUniform4f(glGetUniformLocation(
+            programID, "pointLightColor"), *self.pointLight.color_as_list())
+        glUniform1f(glGetUniformLocation(
+            programID, "pointLightIntensity"), self.pointLight.lightIntensity)
+
+        # Directional Light Params
+        glUniform3f(glGetUniformLocation(
+            programID, "directionalLightDir"), *self.directionalLight.direction.asList()[:3])
+        glUniform4f(glGetUniformLocation(
+            programID, "directionalLightColor"), *
+            self.directionalLight.color_as_list())
+        glUniform1f(glGetUniformLocation(
+            programID, "directionalLightIntensity"),
+            self.directionalLight.lightIntensity)
+
+        # Spot Light Params
+        glUniform3f(glGetUniformLocation(
+            programID, "spotLightPos"), *self.spotLight.position.asList()[:3])
+        glUniform3f(glGetUniformLocation(
+            programID, "spotLightDir"), *self.spotLight.direction.asList()[:3])
+        glUniform4f(glGetUniformLocation(
+            programID, "spotLightColor"), *
+            self.spotLight.color_as_list())
+        glUniform1f(glGetUniformLocation(
+            programID, "spotLightIntensity"),
+            self.spotLight.lightIntensity)
+        glUniform1f(glGetUniformLocation(
+            programID, "spotLightAngle"),
+            np.cos(self.spotLight.angle))
 
         glUseProgram(0)
 

@@ -22,17 +22,9 @@ app.scene.add_object(manifoldObj)
 
 
 def main():
-    print(" - I did not use the objects you gave in the assignment.")
-    print(" - Because I did the Homework before you edited, and did 2 homeworks at once.")
-    print(" - So, next week's homework will be the same code unless I update it.")
-    print("\n - 1st Resubmission changes (02-01-2022):")
-    print("   - Turko-English language UI fixed.")
-    print("   - Blinn fixed.")
-    print("   - Camera significantly improved.")
-    print("   - Spotlight added.")
     app.glutInit()
 
 
-numpy.set_printoptions(precision=2)
+numpy.set_printoptions(precision=6)
 numpy.set_printoptions(threshold=numpy.inf)
 main()
