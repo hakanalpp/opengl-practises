@@ -50,7 +50,8 @@ void main()
    vec4 spotLightScalar = vec4(0,0,0,1);
    float angleThreshold = dot(normalize(spotLightPos-fragPos), normalize(-spotLightDir));
    if (angleThreshold >= spotLightAngle) {
-      spotLightScalar = spotLightColor * spotLightIntensity * pow(angleThreshold, 45);
+      float spotLightNDotL = max(dot(fragNormal, normalize(vec4(-spotLightDir, 0.0))), 0.0);
+      spotLightScalar = spotLightColor * spotLightIntensity * pow(angleThreshold, 45) * spotLightNDotL;
    }
 
    // Blinn. I only calculated blinn for point light on top.
